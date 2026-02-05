@@ -4,18 +4,18 @@ import * as Google from "expo-auth-session/providers/google";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import {
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithCredential,
+    GoogleAuthProvider,
+    onAuthStateChanged,
+    signInWithCredential,
 } from "firebase/auth";
 import React, { useEffect } from "react";
 import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Image,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { auth } from "../firebaseConfig";
 
@@ -27,10 +27,10 @@ export default function LoginScreen() {
 
   // Configure Google Sign-In
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    // REPLACE THESE WITH YOUR ACTUAL CLIENT IDs from Google Cloud Console
-    iosClientId: "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
-    androidClientId: "YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com",
-    webClientId: "YOUR_WEB_CLIENT_ID.apps.googleusercontent.com",
+    // Client IDs from google-services.json
+    iosClientId: "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com", // Add iOS Client ID if testing on iOS
+    androidClientId: "885455459982-ltgro6j2c98l3hoilqsi3l3470f3muam.apps.googleusercontent.com",
+    webClientId: "885455459982-p3numcgf7ve0b5mobvaobr74fgou11pv.apps.googleusercontent.com",
   });
 
   useEffect(() => {

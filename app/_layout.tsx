@@ -13,8 +13,7 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
-      <Stack.Screen name="otp" />
-      <Stack.Screen name="success" />
+      
       <Stack.Screen name="+not-found" />
     </Stack>
   );

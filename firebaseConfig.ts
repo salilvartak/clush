@@ -1,14 +1,10 @@
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
-import { getReactNativePersistence, initializeAuth } from "firebase/auth";
-
-// 2. Cast to 'any' to bypass the "no exported member" error
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import * as firebaseAuth from "firebase/auth";
+import { browserLocalPersistence, initializeAuth } from "firebase/auth";
+import { Platform } from "react-native";
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyASpmkgC9Ts3D-UgKeGy2jLT9j6_Q_Du2E",
   authDomain: "clush-9d323.firebaseapp.com",
@@ -22,6 +18,18 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 
+let persistence;
+
+if (Platform.OS === "web") {
+  persistence = browserLocalPersistence;
+} else {
+  // Extract getReactNativePersistence unsafely to bypass the missing type definition
+  // This block only runs on native, preventing the "not a function" error on web
+  const reactNativePersistence = (firebaseAuth as any)
+    .getReactNativePersistence;
+  persistence = reactNativePersistence(ReactNativeAsyncStorage);
+}
+
 export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+  persistence,
 });
