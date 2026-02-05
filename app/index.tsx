@@ -1,22 +1,67 @@
 import { ThemedView } from "@/components/themed-view";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import * as Google from "expo-auth-session/providers/google";
+import { useRouter } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential,
+} from "firebase/auth";
+import React, { useEffect } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { auth } from "../firebaseConfig";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen() {
-  const colorScheme = useColorScheme() ?? "light";
+  const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
+
+  // Configure Google Sign-In
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    // REPLACE THESE WITH YOUR ACTUAL CLIENT IDs from Google Cloud Console
+    iosClientId: "YOUR_IOS_CLIENT_ID.apps.googleusercontent.com",
+    androidClientId: "YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com",
+    webClientId: "YOUR_WEB_CLIENT_ID.apps.googleusercontent.com",
+  });
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      setLoading(true);
+      signInWithCredential(auth, credential).catch((error) => {
+        setLoading(false);
+        alert("Login failed: " + error.message);
+      });
+    }
+  }, [response]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.replace("/success");
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <ThemedView style={styles.container}>
       <View style={styles.centerContent}>
-        {/* Heart Image - Ensure heart.png exists in your assets/images folder */}
         <Image
           source={require("@/assets/images/logo.png")}
           style={styles.heartImage}
           resizeMode="contain"
         />
-
         <Text style={styles.welcomeTitle}>Welcome back</Text>
         <Text style={styles.description}>
           We've missed you. Let's see{"\n"}what's new in your circle.
@@ -34,29 +79,30 @@ export default function LoginScreen() {
           <Text style={styles.phoneButtonText}>Continue with Phone</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.googleButton}>
-          <FontAwesome
-            name="google"
-            size={24}
-            color="#EA4335"
-            style={styles.buttonIcon}
-          />
+        <TouchableOpacity
+          style={styles.googleButton}
+          onPress={() => promptAsync()} // <--- Make sure this is here!
+          disabled={!request}
+        >
+          {loading ? (
+            <ActivityIndicator color="#EA4335" style={styles.buttonIcon} />
+          ) : (
+            <FontAwesome
+              name="google"
+              size={24}
+              color="#EA4335"
+              style={styles.buttonIcon}
+            />
+          )}
           <Text style={styles.googleButtonText}>Continue with Google</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          New here? <Text style={styles.linkText}>Create account</Text>
-        </Text>
-        <TouchableOpacity>
-          <Text style={styles.linkText}>Trouble logging in?</Text>
-        </TouchableOpacity>
-      </View>
+      {/* ... Footer code ... */}
     </ThemedView>
   );
 }
 
+// ... styles ...
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -66,24 +112,8 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     alignItems: "center",
   },
-  header: {
-    marginBottom: 40,
-  },
-  logoText: {
-    fontSize: 32,
-    letterSpacing: 4,
-    fontFamily: "serif",
-    color: "#000",
-  },
-  centerContent: {
-    alignItems: "center",
-    marginBottom: 50,
-  },
-  heartImage: {
-    width: 250,
-    height: 250,
-    marginBottom: 30,
-  },
+  centerContent: { alignItems: "center", marginBottom: 50 },
+  heartImage: { width: 250, height: 250, marginBottom: 30 },
   welcomeTitle: {
     fontSize: 36,
     fontWeight: "800",
@@ -98,10 +128,7 @@ const styles = StyleSheet.create({
     color: "#666",
     lineHeight: 24,
   },
-  buttonContainer: {
-    width: "100%",
-    gap: 15,
-  },
+  buttonContainer: { width: "100%", gap: 15 },
   phoneButton: {
     flexDirection: "row",
     backgroundColor: "#B58373",
@@ -111,11 +138,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     elevation: 3,
   },
-  phoneButtonText: {
-    color: "#FFF",
-    fontSize: 18,
-    fontWeight: "600",
-  },
+  phoneButtonText: { color: "#FFF", fontSize: 18, fontWeight: "600" },
   googleButton: {
     flexDirection: "row",
     backgroundColor: "#FFF",
@@ -127,27 +150,6 @@ const styles = StyleSheet.create({
     borderColor: "#DDD",
     elevation: 3,
   },
-  googleButtonText: {
-    color: "#000",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  buttonIcon: {
-    marginRight: 10,
-  },
-  footer: {
-    marginTop: "auto",
-    alignItems: "center",
-    gap: 10,
-  },
-  footerText: {
-    fontSize: 16,
-    color: "#8C7A5B",
-  },
-  linkText: {
-    fontSize: 16,
-    color: "#8C7A5B",
-    textDecorationLine: "underline",
-    fontWeight: "500",
-  },
+  googleButtonText: { color: "#000", fontSize: 18, fontWeight: "600" },
+  buttonIcon: { marginRight: 10 },
 });

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "885455459982",
+    "project_id": "clush-9d323",
+    "storage_bucket": "clush-9d323.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885455459982:android:13694f5a9cac6db15a5bdf",
+        "android_client_info": {
+          "package_name": "com.salilvartak.clush"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "885455459982-ltgro6j2c98l3hoilqsi3l3470f3muam.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.salilvartak.clush",
+            "certificate_hash": "bb0e5f2a5096f21aa75450733739c201250e17a9"
+          }
+        },
+        {
+          "client_id": "885455459982-p3numcgf7ve0b5mobvaobr74fgou11pv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVBGDsG_SZF9tYZfapYbZVaX0aseRVpjI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "885455459982-p3numcgf7ve0b5mobvaobr74fgou11pv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,7 +17,8 @@
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.salilvartak.clush"
+      "package": "com.salilvartak.clush",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -38,6 +39,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3a71e904-6cdc-436c-81a3-3067196c1d10"
+      }
     }
   }
 }
